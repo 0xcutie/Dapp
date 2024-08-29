@@ -1,0 +1,28 @@
+//SPDX-License-Identifier: MIT
+pragma solidity^0.8.13;
+
+import"hardhat/console.sol";
+
+contract paynow{
+
+    uint amount;
+    address payee;
+    address payer;
+    address owner;
+
+    constructor(){
+        owner = msg.sender;
+        console.log(owner);
+    }
+
+    function weixin(uint amount_to_transfer, address payee_ad, address payer_ad) public{
+        amount = amount_to_transfer;
+        payee = payee_ad;
+        payer = payer_ad;
+    }
+
+    function check_tx() public view returns(address, address, uint){
+        return(payer, payee, amount);
+    }
+
+}
