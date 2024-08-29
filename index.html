@@ -1,9 +1,72 @@
-<h2>Welcome to DAPP - Store and Transfer Money</h2>
-<br>
-<form action = "/store_money" method="post">
-    <input type="submit" value="Store Money">
-</form>
-<br>
-<a href="transfer_money.html">
-    <button type="button">Transfer Money</button>
-</a>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DAPP - Store and Transfer Money</title>
+    <style>
+        body {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px;
+            font-family: Arial, sans-serif;
+            text-align: center;
+        }
+
+        h2 {
+            font-size: 28px;
+            margin-bottom: 20px;
+        }
+
+        form, a {
+            width: 100%;
+            max-width: 400px;
+            margin-bottom: 15px;
+        }
+
+        input[type="submit"], button {
+            width: 100%;
+            padding: 10px;
+            font-size: 16px;
+            cursor: pointer;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 5px;
+        }
+
+        button {
+            background-color: #008CBA;
+        }
+
+        input[type="submit"]:hover, button:hover {
+            background-color: #45a049;
+        }
+
+        @media only screen and (max-width: 600px) {
+            h2 {
+                font-size: 24px;
+            }
+
+            input[type="submit"], button {
+                font-size: 14px;
+                padding: 8px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <h2>Welcome to DAPP - Store and Transfer Money</h2>
+    <br>
+    <form action="/store_money" method="post">
+        <input type="submit" value="Store Money">
+    </form>
+    <br>
+    <a href="transfer_money.html">
+        <button type="button">Transfer Money</button>
+    </a>
+
+</body>
+</html>
