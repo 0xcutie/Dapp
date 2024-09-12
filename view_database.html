@@ -84,7 +84,7 @@
     <script>
         // 當頁面加載時，請求資料庫中的數據並顯示
         window.onload = function() {
-            fetch('http://your-backend-url/view_database')  // 這裡將使用後端提供的 API 來獲取資料庫數據
+            fetch('https://dapp-cyc8.onrender.com/view_database')  // 這裡將使用後端提供的 API 來獲取資料庫數據
             .then(response => response.json())
             .then(data => {
                 const tableBody = document.querySelector('#databaseTable tbody');
