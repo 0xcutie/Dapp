@@ -16,6 +16,7 @@ contract paynow{
     }
 
     function weixin(uint amount_to_transfer, address payee_ad, address payer_ad) public{
+        console.log("weixin called with: ", amount_to_transfer, payee_ad, payer_ad);
         amount = amount_to_transfer;
         payee = payee_ad;
         payer = payer_ad;

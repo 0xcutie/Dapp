@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Welcome, User</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Broadway&display=swap');
+        body {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px;
+            font-family: 'Broadway', sans-serif;
+            text-align: center;
+            background-color: #f7d5ce;
+        }
+        h2 {
+            font-size: 36px;
+            margin-bottom: 20px;
+            color: #ff7f50;
+            text-shadow: 1px 1px 2px #ffb6c1;
+        }
+        .description-box {
+            width: 100%;
+            padding: 15px;
+            margin-bottom: 30px;
+            background-color: #ffe4e1;
+            color: #2c292e;
+            border-radius: 20px;
+            font-size: 18px;
+            line-height: 1.5;
+            font-family: 'Broadway', sans-serif;
+        }
+        form, a {
+            width: 100%;
+            max-width: 400px;
+            margin-bottom: 30px;
+        }
+        input[type="submit"], button {
+            width: 100%;
+            padding: 15px;
+            font-size: 18px;
+            background-color: #ffb6c1;
+            color: #4B0082;
+            border: none;
+            border-radius: 20px;
+            box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.2);
+            font-family: 'Broadway', sans-serif;
+        }
+        button {
+            background-color: #ffe4e1;
+        }
+        input[type="submit"]:hover, button:hover {
+            background-color: #fa8072;
+            color: white;
+        }
+        .background-image {
+            width: 100%;
+            max-width: 400px;
+            margin-top: 40px;
+            margin-bottom: 20px;
+            border-radius: 20px;
+            box-shadow: 3px 3px 8px rgba(0, 0, 0, 0.2);
+        }
+    </style>
+</head>
+<body>
+
+    <!-- 動態顯示名字 -->
+    <h2>Hi, <span id="userName">User</span></h2>
+    
+    <div class="description-box">
+        To donate money to Chiikaka, please press the "Store Money" button.<br>
+        To transfer money to a specific character in Chiikawa, please press "Transfer Money" button.
+    </div>
+
+    <!-- Store Money 按鈕連結 -->
+    <a href="store_money.html">
+        <button type="button">Store Money</button>
+    </a>
+    
+    <!-- Transfer Money 按鈕連結 -->
+    <a href="transfer_money.html">
+        <button type="button">Transfer Money</button>
+    </a>
+
+    <!-- Log Out 按鈕 -->
+    <a href="#" onclick="logOut()">
+        <button type="button">Log Out</button>
+    </a>
+
+    <!-- Admin Page 按鈕連結 -->
+    <a href="admin.html">
+        <button type="button">Admin Page</button>
+    </a>
+
+    
+    <!-- 背景圖片 -->
+    <img src="https://image.cache.storm.mg/styles/smg-800x533-fp/s3/media/image/2024/03/22/20240322-042110_U21510_M941455_2cfc.JPG?JXL5gOp7upwANqclukGD44dHBqFtG_F1&itok=MMyZb9lV" alt="Background Image" class="background-image">
+
+    <script>
+        // 使用 JavaScript 從 URL 或 localStorage 讀取名稱參數並顯示
+        const urlParams = new URLSearchParams(window.location.search);
+        let name = urlParams.get('name');
+
+        // 如果有名字，儲存到 localStorage；如果沒有，從 localStorage 讀取
+        if (name) {
+            localStorage.setItem('userName', name);
+        } else {
+            name = localStorage.getItem('userName') || 'User';
+        }
+
+        document.getElementById('userName').textContent = name;
+
+        // Log Out function: 清除 localStorage 中的名字並返回名字輸入頁面
+        function logOut() {
+            localStorage.removeItem('userName');
+            window.location.href = 'name_input.html'; // 導向名字輸入頁面的 URL
+        }
+    </script>
+
+</body>
+</html>

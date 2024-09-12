@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Page</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Broadway&display=swap');
+        body {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px;
+            font-family: 'Broadway', sans-serif;
+            text-align: center;
+            background-color: #f7d5ce;
+        }
+        h2 {
+            font-size: 36px;
+            margin-bottom: 20px;
+            color: #ff7f50;
+            text-shadow: 1px 1px 2px #ffb6c1;
+        }
+        .description-box {
+            width: 100%;
+            padding: 15px;
+            margin-bottom: 30px;
+            background-color: #ffe4e1;
+            color: #2c292e;
+            border-radius: 20px;
+            font-size: 18px;
+            line-height: 1.5;
+            font-family: 'Broadway', sans-serif;
+        }
+        form, a {
+            width: 100%;
+            max-width: 400px;
+            margin-bottom: 30px;
+        }
+        input[type="submit"], button {
+            width: 100%;
+            padding: 15px;
+            font-size: 18px;
+            background-color: #ffb6c1;
+            color: #4B0082;
+            border: none;
+            border-radius: 20px;
+            box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.2);
+            font-family: 'Broadway', sans-serif;
+        }
+        button {
+            background-color: #ffe4e1;
+        }
+        input[type="submit"]:hover, button:hover {
+            background-color: #fa8072;
+            color: white;
+        }
+        .background-image {
+            width: 100%;
+            max-width: 400px;
+            margin-top: 40px;
+            margin-bottom: 20px;
+            border-radius: 20px;
+            box-shadow: 3px 3px 8px rgba(0, 0, 0, 0.2);
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Admin Page 標題 -->
+    <h2>Welcome to Admin Page</h2>
+    
+    <div class="description-box">
+        This is the admin panel. Use the buttons below to manage the system.
+    </div>
+
+    <!-- View Database 按鈕連結 -->
+    <a href="view_database.html">
+        <button type="button">View Database</button>
+    </a>
+    
+    <!-- Delete all Data 按鈕連結 -->
+    <a href="#" onclick="deleteAllData()">
+        <button type="button">Delete all Data</button>
+    </a>
+
+    <!-- Main 按鈕連結，返回主頁 -->
+    <a href="main.html">
+        <button type="button">Main</button>
+    </a>
+
+    <script>
+        // Function for deleting all data
+        function deleteAllData() {
+            if (confirm("Are you sure you want to delete all data? This action cannot be undone.")) {
+                // 發送請求到伺服器，請求刪除所有資料
+                fetch('/delete_all_data', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    }
+                })
+                .then(response => {
+                    if (response.ok) {
+                        alert("Successfully deleted all data!");
+                    } else {
+                        alert("Failed to delete data.");
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert("An error occurred while deleting data.");
+                });
+            }
+        }
+    </script>
+
+</body>
+</html>

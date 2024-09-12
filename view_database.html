@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>View Database</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Broadway&display=swap');
+        body {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px;
+            font-family: 'Broadway', sans-serif;
+            text-align: center;
+            background-color: #f7d5ce;
+        }
+        h2 {
+            font-size: 36px;
+            margin-bottom: 20px;
+            color: #ff7f50;
+            text-shadow: 1px 1px 2px #ffb6c1;
+        }
+        table {
+            width: 80%;
+            margin: 20px 0;
+            border-collapse: collapse;
+            background-color: #ffe4e1;
+        }
+        th, td {
+            padding: 10px;
+            border: 1px solid #ddd;
+            text-align: center;
+        }
+        th {
+            background-color: #ffb6c1;
+            color: #4B0082;
+        }
+        td {
+            background-color: #fff;
+            color: #2c292e;
+        }
+        .main-button {
+            margin-top: 20px;
+            padding: 15px;
+            font-size: 18px;
+            background-color: #ffb6c1;
+            color: #4B0082;
+            border: none;
+            border-radius: 20px;
+            cursor: pointer;
+            font-family: 'Broadway', sans-serif;
+        }
+        .main-button:hover {
+            background-color: #fa8072;
+            color: white;
+        }
+    </style>
+</head>
+<body>
+
+    <h2>View Database</h2>
+
+    <table id="databaseTable">
+        <thead>
+            <tr>
+                <th>Transaction Hash</th>
+                <th>Action</th>
+                <th>User ID</th>
+                <th>Receiver ID</th>
+                <th>Amount</th>
+                <th>Timestamp</th>
+            </tr>
+        </thead>
+        <tbody>
+            <!-- 資料庫數據將被動態添加到這裡 -->
+        </tbody>
+    </table>
+
+    <a href="admin.html">
+        <button class="main-button">Back to Admin</button>
+    </a>
+
+    <script>
+        // 當頁面加載時，請求資料庫中的數據並顯示
+        window.onload = function() {
+            fetch('http://your-backend-url/view_database')  // 這裡將使用後端提供的 API 來獲取資料庫數據
+            .then(response => response.json())
+            .then(data => {
+                const tableBody = document.querySelector('#databaseTable tbody');
+                data.forEach(row => {
+                    const newRow = document.createElement('tr');
+                    newRow.innerHTML = `
+                        <td>${row.tx_hash}</td>
+                        <td>${row.action}</td>
+                        <td>${row.user_id}</td>
+                        <td>${row.receiver_id || 'N/A'}</td>  <!-- 若無 receiver_id 則顯示 N/A -->
+                        <td>${row.amount}</td>
+                        <td>${row.timestamp}</td>
+                    `;
+                    tableBody.appendChild(newRow);
+                });
+            })
+            .catch(error => {
+                console.error('Error fetching database data:', error);
+            });
+        }
+    </script>
+
+</body>
+</html>

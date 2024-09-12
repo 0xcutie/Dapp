@@ -5,74 +5,94 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Ethereum DApp 5</title>
     <style>
+        @import url('https://fonts.googleapis.com/css2?family=Broadway&display=swap');
+
         body {
-            font-family: 'Arial', sans-serif;
-            background-color: #f0f0f0;
+            font-family: 'Broadway', sans-serif;
+            background-color: #f5e8e4;
             margin: 0;
             padding: 20px;
             display: flex;
             justify-content: center;
             align-items: center;
             height: 100vh;
+            background-image: url('https://pgw.udn.com.tw/gw/photo.php?u=https://uc.udn.com.tw/photo/2024/03/21/0/29251088.jpg&x=0&y=0&sw=0&sh=0&sl=W&fw=800&exp=3600&w=465&nt=1');
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
         }
 
         .container {
-            background-color: #ffffff;
-            padding: 30px;
-            border-radius: 8px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            background-color: rgba(255, 255, 255, 0.9); /* 半透明白色背景使文字更清晰 */
+            padding: 40px;
+            border-radius: 20px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
             max-width: 400px;
             width: 100%;
             text-align: center;
         }
 
         h2 {
-            font-size: 24px;
-            margin-bottom: 20px;
-            color: #333;
+            font-size: 32px;
+            margin-bottom: 30px;
+            color: #fa8072; /* 鮭魚色標題 */
+            text-shadow: 1px 1px 2px #ffa07a; /* 文字陰影，增添柔和感 */
         }
 
         input, button {
             width: 100%;
-            padding: 10px;
-            margin-top: 10px;
-            border-radius: 4px;
+            padding: 15px;
+            margin-top: 15px;
+            border-radius: 20px;
             border: 1px solid #ddd;
-            font-size: 16px;
+            font-size: 18px;
+            font-family: 'Broadway', sans-serif;
         }
 
         button {
-            background-color: #007bff;
+            background-color: #ffb6c1; /* 使用粉紅色作為按鈕背景色 */
             color: white;
             border: none;
             cursor: pointer;
+            box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.2);
         }
 
         button:hover {
-            background-color: #0056b3;
+            background-color: #fa8072; /* 鮭魚色，增添互動效果 */
+        }
+
+        .main-button {
+            margin-top: 30px;
+            background-color: #ffe4e1; /* 使用淡粉色作為主按鈕背景色 */
+            color: #4B0082; /* 深紫色文字 */
+        }
+
+        .main-button:hover {
+            background-color: #ffb6c1; /* 粉紅色懸停效果 */
         }
 
         p {
             margin-top: 20px;
-            font-size: 18px;
-            color: #007bff;
+            font-size: 20px;
+            color: #4B0082; /* 深紫色文字 */
         }
 
         @media (max-width: 768px) {
             .container {
-                padding: 20px;
+                padding: 30px;
             }
 
             h2 {
-                font-size: 20px;
+                font-size: 28px;
             }
 
             input, button {
-                font-size: 14px;
+                font-size: 16px;
+                padding: 12px;
             }
 
             p {
-                font-size: 16px;
+                font-size: 18px;
             }
         }
     </style>
@@ -85,6 +105,10 @@
         <button class="btn" onclick="getValue()">Get Stored Value</button>
         <p id="storedValue"></p>
         <p id="status"></p>
+
+        <form action="main.html" method="get">
+            <button type="submit" class="main-button">Main</button>
+        </form>
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/web3@1.5.2/dist/web3.min.js"></script>
@@ -122,18 +146,92 @@
         const web3 = new Web3(Web3.givenProvider);
         const contract = new web3.eth.Contract(contractABI, contractAddress);
 
+        let hasStoredValue = false; // 初始設置為 false，表示尚無存儲的值
+
         async function storeValue() {
-            const accounts = await web3.eth.requestAccounts();
             const value = document.getElementById('moneyInput').value;
-            console.log("value: " + value);
-            console.log("accounts[0] " + accounts[0]);
-            await contract.methods.store_m(value).send({from: accounts[0]});
+            const statusElement = document.getElementById('status');
+            const storedValueElement = document.getElementById('storedValue');
+
+            // 清除之前的提示信息
+            statusElement.innerText = '';
+            storedValueElement.innerText = '';
+
+            if (value === "" || value <= 0) { // 檢查是否輸入了有效的金額
+                statusElement.innerText = "Please enter amount to store.";
+                return;
+            }
+
+            try {
+                // 請求連接 MetaMask 帳戶
+                const accounts = await web3.eth.requestAccounts();
+                
+                console.log("value: " + value);
+                console.log("accounts[0] " + accounts[0]);
+
+                // 呼叫智能合約的 store_m 方法進行交易
+                const receipt = await contract.methods.store_m(value).send({
+                    from: accounts[0],
+                    gas: 3000000 // 設定足夠的 Gas
+                });
+
+                // 成功後的提示信息
+                hasStoredValue = true; // 存儲值後設置為 true
+                statusElement.innerText = "Amount stored successfully!";
+
+                // 獲取交易哈希
+                const txHash = receipt.transactionHash;
+                console.log("Transaction Hash: " + txHash);
+
+                // 發送交易數據到後端來記錄
+                const data = {
+                    action: 'store',
+                    user_id: accounts[0],
+                    amount: value,
+                    tx_hash: txHash,
+                    timestamp: new Date().toISOString() // 當前時間
+                };
+
+                // 使用 fetch 發送 POST 請求到伺服器
+                fetch('http://你的後端伺服器地址/store_money', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(data),
+                })
+                .then(response => response.json())
+                .then(data => {
+                    console.log('Transaction recorded:', data);
+                })
+                .catch((error) => {
+                    console.error('Error recording transaction:', error);
+                });
+
+            } catch (error) {
+                // 錯誤處理，顯示交易失敗提示
+                console.error(error);
+                statusElement.innerText = "Transaction failed. Please try again.";
+            }
         }
 
+
+
         async function getValue() {
+            const statusElement = document.getElementById('status');
+            const storedValueElement = document.getElementById('storedValue');
+
+            // 清除之前的提示信息
+            statusElement.innerText = '';
+            storedValueElement.innerText = '';
+
+            if (!hasStoredValue) {
+                storedValueElement.innerText = "There is no stored value.";
+                return;
+            }
             const storedValue = await contract.methods.view_m().call();
             console.log("stored value " + storedValue);
-            document.getElementById('storedValue').innerText = "Stored Value: " + storedValue;
+            storedValueElement.innerText = "Stored Value: " + storedValue;
         }
     </script>
 </body>

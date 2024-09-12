@@ -5,90 +5,134 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Transfer Money v1</title>
     <style>
+        @import url('https://fonts.googleapis.com/css2?family=Broadway&display=swap');
+
         body {
+            font-family: 'Broadway', sans-serif;
+            background-color: #ffecd2; /* 柔和的淡橘色背景 */
+            margin: 0;
+            padding: 20px;
             display: flex;
             flex-direction: column;
             align-items: center;
-            padding: 20px;
-            font-family: Arial, sans-serif;
+            justify-content: center;
+            min-height: 100vh;
+            position: relative;
         }
 
-        input {
-            width: 100%;
+        .container {
+            background-color: rgba(255, 255, 255, 0.9); /* 半透明白色背景使文字更清晰 */
+            padding: 40px;
+            border-radius: 20px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
             max-width: 400px;
-            margin-bottom: 15px;
-            padding: 10px;
-            font-size: 16px;
-            box-sizing: border-box;
+            width: 100%;
+            text-align: center;
+            position: relative;
+            z-index: 2;
+        }
+
+        h2 {
+            font-size: 32px;
+            margin-bottom: 30px;
+            color: #fa8072; /* 鮭魚色標題 */
+            text-shadow: 1px 1px 2px #ffa07a; /* 文字陰影，增添柔和感 */
+        }
+
+        input, button {
+            width: 100%;
+            padding: 15px;
+            margin-top: 15px;
+            border-radius: 20px;
+            border: 1px solid #ddd;
+            font-size: 18px;
+            font-family: 'Broadway', sans-serif;
         }
 
         button {
-            width: 100%;
-            max-width: 400px;
-            padding: 10px;
-            margin: 5px;
-            font-size: 16px;
-            cursor: pointer;
-            background-color: #4CAF50;
+            background-color: #ffb6c1; /* 使用粉紅色作為按鈕背景色 */
             color: white;
             border: none;
-            border-radius: 5px;
+            cursor: pointer;
+            box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.2);
         }
 
         button:hover {
-            background-color: #45a049;
+            background-color: #fa8072; /* 鮭魚色，增添互動效果 */
         }
 
         form {
-            width: 100%;
-            max-width: 400px;
             margin-top: 20px;
         }
 
         p {
-            width: 100%;
-            max-width: 400px;
-            text-align: left;
+            font-size: 18px;
+            color: #4B0082; /* 深紫色文字 */
+        }
+
+        .side-images {
+            position: absolute;
+            top: 0;
+            bottom: 0;
+            width: 150px;
+            background-image: url('https://shoplineimg.com/593a74e8d4e3953f80005193/630edd47b3fcf1002b6dac67/1080x.webp?source_format=jpg');
+            background-size: contain;
+            background-repeat: no-repeat;
+            background-position: center;
+            z-index: 1;
+        }
+
+        .left-side {
+            left: 0;
+        }
+
+        .right-side {
+            right: 0;
         }
 
         @media only screen and (max-width: 600px) {
-            body {
-                padding: 10px;
-            }
-
-            input, button, form, p {
-                width: 100%;
-                max-width: 100%;
-                font-size: 14px;
-            }
-
             h2 {
-                font-size: 24px;
+                font-size: 28px;
+            }
+
+            input, button {
+                font-size: 16px;
+                padding: 12px;
+            }
+
+            p {
+                font-size: 16px;
+            }
+
+            .side-images {
+                display: none; /* 在小螢幕上隱藏側邊圖片 */
             }
         }
     </style>
 </head>
 <body>
 
-    <h2>Welcom to Transfer Money v1</h2>
+    <div class="side-images left-side"></div> <!-- 左側圖片 -->
+    <div class="side-images right-side"></div> <!-- 右側圖片 -->
 
-    <input type="text" id="payer_id" placeholder="Enter payer address">
-    <br>
-    <input type="text" id="payee_id" placeholder="Enter payee address">
-    <br>
-    <input type="number" id="amount_id" placeholder="Enter amount to transfer">
-    <br>
+    <div class="container">
+        <h2>Welcome to Transfer Money</h2>
 
-    <button class="btn" onclick="transfer()">Transfer</button>
-    <button class="btn" onclick="transaction()">Transaction</button>
-    <p id="view_payer_id"></p>
-    <p id="view_payee_id"></p>
-    <p id="view_amount_id"></p>
+        <input type="text" id="payer_id" placeholder="Enter payer address">
+        <input type="text" id="payee_id" placeholder="Enter payee address">
+        <input type="number" id="amount_id" placeholder="Enter amount to transfer">
 
-    <form action="index.html" method="get">
-        <input type="submit" value="main">
-    </form>
+        <button class="btn" onclick="transfer()">Transfer</button>
+        <button class="btn" onclick="transaction()">Transaction</button>
 
+        <p id="view_payer_id"></p>
+        <p id="view_payee_id"></p>
+        <p id="view_amount_id"></p>
+
+        <form action="main.html" method="get">
+            <button type="submit" class="main-button">Main</button>
+        </form>
+    </div>
 
     <script src="https://cdn.jsdelivr.net/npm/web3@1.5.2/dist/web3.min.js"></script>
     <script>
@@ -149,29 +193,101 @@
         const web3 = new Web3(Web3.givenProvider);
         const contract = new web3.eth.Contract(contractABI, contractAddress);
 
+        let hasTransactionOccurred = false;
+
         async function transfer(){
-            const accounts = await web3.eth.requestAccounts();
+            const statusElement = document.getElementById('view_payer_id');
+            const payeeElement = document.getElementById('view_payee_id');
+            const amountElement = document.getElementById('view_amount_id');
+
+            // 清空所有提示
+            statusElement.innerText = "";
+            payeeElement.innerText = "";
+            amountElement.innerText = "";
+
             const amount_t = document.getElementById('amount_id').value;
             const payee_a = document.getElementById('payee_id').value;
             const payer_a = document.getElementById('payer_id').value;
-            console.log(payer_a,payee_a,amount_t);
-            console.log("accounts[0] " + accounts[0]);
-            await contract.methods.weixin(amount_t,payee_a, payer_a).send({ from: accounts[0]});
 
+            if (!payer_a || !payee_a || !amount_t) {
+                statusElement.innerText = "Please enter all the required information.";
+                return;
+            }
+
+            try {
+                const accounts = await web3.eth.requestAccounts();
+                console.log(payer_a, payee_a, amount_t);
+                console.log("accounts[0]: " + accounts[0]);
+
+                // 呼叫智能合約進行轉賬
+                const receipt = await contract.methods.weixin(amount_t, payee_a, payer_a).send({
+                    from: accounts[0]
+                });
+
+                // 交易成功後記錄哈希
+                const txHash = receipt.transactionHash;
+                console.log("Transaction Hash: " + txHash);
+
+                // 發送交易數據到後端記錄
+                const data = {
+                    action: 'transfer',
+                    user_id: payer_a,
+                    receiver_id: payee_a,
+                    amount: amount_t,
+                    tx_hash: txHash,
+                    timestamp: new Date().toISOString()
+                };
+
+                // 發送 POST 請求到後端
+                fetch('http://your-backend-url/transfer_money', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(data),
+                })
+                .then(response => response.json())
+                .then(data => {
+                    console.log('Transfer recorded:', data);
+                })
+                .catch((error) => {
+                    console.error('Error recording transfer:', error);
+                });
+
+                hasTransactionOccurred = true;  // 設定交易已發生
+                statusElement.innerText = "Transfer successful!";
+            } catch (error) {
+                console.error("Transfer failed: ", error);
+                statusElement.innerText = "Transfer failed. Please try again.";
+            }
         }
 
+
         async function transaction() {
+            const statusElement = document.getElementById('view_payer_id');
+            const payeeElement = document.getElementById('view_payee_id');
+            const amountElement = document.getElementById('view_amount_id');
+
+            // 清空所有提示
+            statusElement.innerText = "";
+            payeeElement.innerText = "";
+            amountElement.innerText = "";
+
+            if (!hasTransactionOccurred) {
+                statusElement.innerText = "There is no transaction history.";
+                return;
+            }
+
             const result = await contract.methods.check_tx().call();
+            console.log("Returned result: ", result); // 檢查 result 的內容
             const payer_a = result[0];
             const payee_a = result[1];
             const amount_t = result[2];
 
-            document.getElementById('view_payer_id').innerText = "Payer: " + payer_a;
-            document.getElementById('view_payee_id').innerText = "Payee: " + payee_a;
-            document.getElementById('view_amount_id').innerText = "Amount: " + amount_t;
+            statusElement.innerText = "Payer: " + payer_a;
+            payeeElement.innerText = "Payee: " + payee_a;
+            amountElement.innerText = "Amount: " + amount_t;
         }
-
-
     </script>
 </body>
 </html>
