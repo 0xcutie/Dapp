@@ -3,7 +3,23 @@ import sqlite3
 import datetime
 from web3 import Web3
 import os
+
 from flask_cors import CORS
+CORS(app, resources={r"/*": {"origins": "*"}})  # 允許來自所有來源的請求
+
+
+# 定義 Flask 應用
+app = Flask(__name__)
+
+# 啟用 CORS
+CORS(app)
+
+@app.route('/')
+def home():
+    return 'Hello, Flask with CORS!'
+
+if __name__ == '__main__':
+    app.run(debug=True)
 
 app = Flask(__name__)
 CORS(app)
