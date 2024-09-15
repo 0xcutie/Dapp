@@ -84,7 +84,7 @@
     <script>
         // 當頁面加載時，請求資料庫中的數據並顯示
         window.onload = function() {
-            fetch('https://dapp-cyc8.onrender.com/view_database')  // 這裡將使用後端提供的 API 來獲取資料庫數據
+            fetch('https://dapp-cyc8.onrender.com/view_database')  // 使用你的後端API路徑
             .then(response => response.json())
             .then(data => {
                 const tableBody = document.querySelector('#databaseTable tbody');
@@ -94,7 +94,7 @@
                         <td>${row.tx_hash}</td>
                         <td>${row.action}</td>
                         <td>${row.user_id}</td>
-                        <td>${row.receiver_id || 'N/A'}</td>  <!-- 若無 receiver_id 則顯示 N/A -->
+                        <td>${row.receiver_id || 'N/A'}</td>
                         <td>${row.amount}</td>
                         <td>${row.timestamp}</td>
                     `;
@@ -105,6 +105,7 @@
                 console.error('Error fetching database data:', error);
             });
         }
+
     </script>
 
 </body>
